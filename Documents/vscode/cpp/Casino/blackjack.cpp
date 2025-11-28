@@ -2,7 +2,7 @@
 #include <vector>
 #include <random>
 #include <algorithm> //shuffle
-#include <windows.h> //do shuffle i cls
+//#include <windows.h> //do shuffle i cls
 using namespace std;
 
 const char deckColorsArray[2] = {'p', 'g'}; //(purple or green)
@@ -97,38 +97,50 @@ public:
     }
 };
 
-class Hand {
+class PlayerHand {
     public:
     vector<Card> playerHand;
     
-    
+};
 
+class DealerHand {
+    public:
+    vector<Card> playerHand;
+    
 };
 
 class Player {
     public:
-    double balance;
-    int currentBet;
-};
-
-
-class GameController {
-    Hand h;
-public:
-    void start() {
-        Deck d;
-        d.createDeck();
-        d.shuffleDeck();
-        Card drawnCard = d.drawACard();
-        h.playerHand.push_back(drawnCard);
-        for (const Card& c : h.playerHand) {
-            cout << c.rank << " " << c.suit << endl;
+    double balance = 100;
+    
+    void betting() {
+        int tempBet;
+        int currentBet;
+        bool betDefined = false;
+        
+        while (betDefined == false) {
+            cin >> tempBet;
+            if (tempBet >= 5 && tempBet <= balance) {
+                currentBet = tempBet;
+                betDefined = true;
+                cout << "You entered right amount. \n \n";
+            } 
+            else if (tempBet < 5) {
+                cout << "Your bet is lower than minimal limit. \n" << "Enter the bet again: ";
+            }
+            else if (tempBet > balance) {
+                cout << "Your bet is higher than balance you have. \n" << "Enter the bet again: ";
+            } else {
+                cout << "Your bet amount isn't a number. \n" << "Enter the bet again: ";
+            }
         }
     }
+    
 };
 
 class Narrator {
-    Player p;
+    public:
+    Player pl;
     void greeting() {
         cout << "┌──────────────────────────────┐\n";
         cout << "│   You entered the table...   │\n";
@@ -136,25 +148,38 @@ class Narrator {
         cout << "│                              │\n";
         cout << "└──────────────────────────────┘\n";
         cout << "│Minimal bet: 5$\n";
-        cout << "│Your balance: " << p.balance << "\n";
+        cout << "│Your balance: " << pl.balance << "$\n";
         cout << "└──────────────────────────────┘\n";
+        cout << "Amount: ";
     }
     void gameBeggining() {
-        cout << "   •¢¥§•¢¥§¶†¶†‡§¶†¶†¶†• \n";
-        cout << "   ¤  Wish you luck... ¤ \n";
-        cout << "   •¢¥§¶†¶†‡•¢¥§¶†¶†‡¶†• \n" << "\n";
+        cout << "•¢¥§•¢¥§¶†¶†‡§¶†¶†¶†•\n";
+        cout << "¤  Wish you luck... ¤\n";
+        cout << "•¢¥§¶†¶†‡•¢¥§¶†¶†‡¶†•\n" << "\n";
+    }
+};
+
+class GameController {
+    public:
+    Hand h;
+    Narrator n;
+    Deck d;
+    Player pl;
+    void start() {
+        d.createDeck();
+        d.shuffleDeck();
+        n.greeting();
+        pl.betting();
+        n.gameBeggining();
     }
 };
 
 int main() {
-    SetConsoleOutputCP(CP_UTF8);
+    //SetConsoleOutputCP(CP_UTF8);
 
     GameController gc;
     gc.start();
 
-
-
-    
     return 0;
 }
 
@@ -171,11 +196,7 @@ Funkcja czyszczenia ręki (nowa runda)
 
 2. Klasa gracza
 
-Imię
-Pieniądze/żetony
-Aktualny zakład
 Ręka z kartami (użyj klasy z punktu 1)
-Funkcja stawiania zakładu
 Funkcje wygranej/przegranej (dodawanie/odejmowanie pieniędzy)
 
 3. Klasa krupiera
